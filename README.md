@@ -91,3 +91,8 @@ After you added the config it should be possible to execute hetzner_vm.sh
 
 This will create a new VM called foo with the ip 2a01:dead:dead:beef::4
 
+# Credits
+
+Thanks to the guy behind http://blog.alexdpsg.net/898/. This Blogpost helped
+me a lot with setting up everything on my hetzner host.
+
