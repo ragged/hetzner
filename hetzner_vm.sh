@@ -48,10 +48,12 @@ done
 IPV6="${HE_IP}${LAST}"
 UUID=`uuidgen`
 MAC=$(echo $GUEST|md5sum|sed 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/02:\1:\2:\3:\4:\5/')
+MAC2=$(echo $MAC|md5sum|sed 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/02:\1:\2:\3:\4:\5/')
 
 echo "> VM Hostname=${GUEST}"
 echo "> Last Octett=${LAST}"
 echo "> MAC Address=${MAC}"
+echo "> MAC Address=${MAC2}"
 echo "> IPv6=${IPV6}"
 
 
@@ -88,17 +90,20 @@ auto ens2
 iface ens2 inet6 static
 address ${IPV6}
 netmask 64
-gateway ${HE_IP}3" > /mnt/etc/network/interfaces
+gateway ${HE_IP}3
+
+auto ens5
+iface ens5 inet dhcp" > /mnt/etc/network/interfaces
 
 echo ">> Set fstab"
 echo "proc /proc proc defaults 0 0
 /dev/vda1 / xfs defaults 0 1" > /mnt/etc/fstab
 
 echo ">> Set Repositories"
-echo "deb http://http.debian.net/debian stretch main contrib non-free
-deb http://http.debian.net/debian/ stretch-updates main contrib non-free
-deb http://security.debian.org/ stretch/updates main contrib non-free
-deb http://ftp.debian.org/debian stretch-backports main" > /mnt/etc/apt/sources.list
+echo "deb http://http.debian.net/debian buster main contrib non-free
+deb http://http.debian.net/debian/ buster-updates main contrib non-free
+deb http://security.debian.org/ buster/updates main contrib non-free
+deb http://ftp.debian.org/debian buster-backports main" > /mnt/etc/apt/sources.list
 
 echo ">> Add IPv6 DNS"
 echo "nameserver 2a01:4f8:0:a111::add:9898
@@ -154,6 +159,13 @@ echo "<domain type='kvm'>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
     </interface>
+    <interface type='bridge'>
+      <mac address='${MAC2}'/>
+      <source bridge='virbr0'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>
+    </interface>
+
     <serial type='pty'>
       <target port='0'/>
     </serial>

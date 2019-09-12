@@ -73,6 +73,31 @@ As you can see your dom0 will get ::2 at the end, and the bridge becomes ::3,
 you will meet it again if you look into the vm setup script, ::3 will become
 your gateway for the VMs.
 
+As you can imagine, you have now a working configuration to get your IPv6
+addresses available. But, imagine one thing, you want to download this script
+from github within your vm. *zonk*
+You cannot reach anything IPv4 related. Therefore you need to configure your
+dom0 to NAT your VMs to the outside, this way they can reach them via IPv6,
+and they can reach the whole internet via your dom0's IPv4.
+
+    <network>
+      <name>virbr0</name>
+      <uuid>da15327c-3e33-46a2-a61c-daef9b5f3b52</uuid>
+      <forward dev='enp2s0' mode='nat'>
+        <interface dev='enp2s0'/>
+      </forward>
+      <bridge name='virbr0' stp='on' delay='0'/>
+      <mac address='52:54:00:4f:da:9b'/>
+	  <ip address='88.88.88.145' netmask='255.255.255.255'>
+      </ip>
+      <ip family='ipv4' address='192.168.122.1' netmask='255.255.255.0'>
+        <dhcp>
+          <range start='192.168.122.2' end='192.168.122.254'/>
+        </dhcp>
+      </ip>
+    </network>
+
+
 # VM Setup
 
 First you need to add the configfile "hetzner.cfg" to your users home
